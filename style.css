@@ -3,13 +3,14 @@
 @keyframes caret { 50% { border-color: transparent; } }
 
 html, body{
-font-family: 'Roboto Mono', monospace;
+  margin:0;
+  font-family: 'Roboto Mono', monospace;
   background:#1E1E1E;
 }
 
 .fill{
-  height: 92%;
-  width: 97%;
+  height: 100%;
+  width: 100%;
 }
 
 #main_content{
@@ -86,11 +87,10 @@ font-family: 'Roboto Mono', monospace;
 
  .terminal{
   background-image: radial-gradient(
-    rgba(66, 66, 66, 0.75), black 120%
+    rgba(0, 75, 10, 0.774), black 120%
   );
   margin: 0;
   overflow: hidden;
-  padding: 2rem;
   color: white;
   font: 16px Inconsolata, monospace;
   text-shadow: 0 0 5px #C8C8C8;
