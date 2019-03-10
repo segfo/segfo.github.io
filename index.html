@@ -3,20 +3,28 @@
 
 <head>
     <meta charset="utf-8">
+    <title id="page_title">booting...</title>
     <link rel="stylesheet" href="highlight/styles/vs2015.css">
     <script src="highlight/highlight.pack.js"></script>
     <link href="style.css" rel="stylesheet" type="text/css">
+    <link href="effects/glitch.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="schramble.js"></script>
     <script>hljs.initHighlightingOnLoad()</script>
 </head>
 
 <body class="fill" onload="main()">
-    <div id="name_container" class="fill container animation">
-        <div class="text"></div>
+    <div id="name_container" class="content fill container animation">
+        <div id="auto_prompt" class="text">boot failure.(cause : Deprecated browser.)</div>
         <p class="cursor cursor_big">c</p>
     </div>
     <div id="main_content" class="fill animation terminal">
-        <pre>
+        <!--
+            glich_terminalのdelay-animが
+            画面がロードされてからグリッチノイズを発生させるまでの時間
+            必要に応じて変更する。
+        -->
+        <div class="terminal_text glich_terminal loading">
+            <pre class="content__title">
 <span class="terminal_host">segfo@GitHub</span>: <span class="terminal_path">~/profile</span>$ cat profile.rs
 <code class="rust transparent">
 use segfo;
@@ -37,8 +45,9 @@ Qualification : Segmentation fault (core dumped)
 <span class="terminal_host">segfo@GitHub</span>: <span class="terminal_path">~/profile</span>$<span class="cursor cursor_small"> </span>
 
 </pre>
+        </div>
 
-</div>
+    </div>
 </body>
 
 </html>

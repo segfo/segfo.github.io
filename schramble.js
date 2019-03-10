@@ -58,13 +58,15 @@ class TextScramble {
     }
 }
 
-function rendering_done(){
-    setTimeout(()=>{
-        var text = document.getElementById('name_container');
-        const fadeout_impl=()=>{
-          text.classList.add('fadeout');
-          e=document.getElementById('main_content');
-          e.classList.add('fadein');
+function rendering_done() {
+    setTimeout(() => {
+        const fadeout_impl = () => {
+            var name_container = document.getElementById('name_container');
+            name_container.classList.add('fadeout');
+            e = document.getElementById('main_content');
+            e.classList.add('fadein');
+            var title = document.getElementById('page_title');
+            title.innerText="./about @segfo";
         };
         fadeout_impl();
     }, 1000)
@@ -74,6 +76,12 @@ function rendering_done(){
 const phrases = ['./about @segfo']
 
 function main() {
+    var userAgent = window.navigator.userAgent.toLowerCase();
+    if(userAgent.indexOf('msie') != -1||userAgent.indexOf('trident') != -1) {
+        return;
+    }
+    var text = document.getElementById('auto_prompt');
+    text.innerText="";
     const el = document.querySelector('.text')
     const fx = new TextScramble(el)
     let counter = 0

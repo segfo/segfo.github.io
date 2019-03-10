@@ -91,7 +91,7 @@ html, body{
   );
   margin: 0;
   overflow: hidden;
-  color: white;
+  color: #DCDCDC;
   font: 16px Inconsolata, monospace;
   text-shadow: 0 0 5px #C8C8C8;
 }
@@ -99,9 +99,8 @@ html, body{
   background: #666;
   text-shadow: none;
 }
+
 pre {
-  height: 100%;
-  width: 100%;
   margin: 0;
 }
 
