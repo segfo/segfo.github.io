@@ -1,52 +1,205 @@
-<!DOCTYPE html>
-<html class="fill">
-
-<head>
+<!DOCTYPE html><html lang="ja-jp"><head>
     <meta charset="utf-8">
-    <title id="page_title">booting...</title>
-    <link rel="stylesheet" href="highlight/styles/vs2015.css">
-    <script src="highlight/highlight.pack.js"></script>
-    <link href="style.css" rel="stylesheet" type="text/css">
-    <link href="effects/glitch.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="schramble.js"></script>
-    <script>hljs.initHighlightingOnLoad()</script>
-</head>
+    <title>Yew Sample App</title>
+    <!--xterm.js-->
+    
+    
+    
+    
+    
+    
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="./css/xterm.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="./xterm.js"></script>
+    <script src="./xterm-addon-web-links.js"></script>
+    <script src="./lib/addon-fit.js"></script>
+    <script src="./lib/xterm-addon-image.js"></script>
 
-<body class="fill" onload="main()">
-    <div id="name_container" class="content fill container animation">
-        <div id="auto_prompt" class="text">boot failure.(cause : Deprecated browser.)</div>
-        <p class="cursor cursor_big">c</p>
-    </div>
-    <div id="main_content" class="fill animation terminal">
-        <!--
-            glich_terminalのdelay-animが
-            画面がロードされてからグリッチノイズを発生させるまでの時間
-            必要に応じて変更する。
-        -->
-        <div class="terminal_text glich_terminal loading">
-            <pre class="content__title">
-<span class="terminal_host">segfo@GitHub</span>: <span class="terminal_path">~/profile</span>$ cat profile.rs
-<code class="rust transparent">
-use segfo;
-fn  main(){
-    let profile = segfo::new("1991/07/21");
-    profile.show()
-}</code>
-<span class="terminal_host">segfo@GitHub</span>: <span class="terminal_path">~/profile</span>$ cargo run
-***** profile *****
-Job : Security assessment.
-Programming Language : Rust / Python / C# / C / x86_64asm
-hobby(interest) : programming(bare-metal , application) / binary analysis / forensics
+<link rel="preload" href="/profile-c6ce702f0114ceda_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
+<link rel="modulepreload" href="/profile-c6ce702f0114ceda.js"></head>
 
-GitHub : <a href="https://github.com/segfo/"><img class="logo" src="img/github.png"/></a>
-Qualification : Segmentation fault (core dumped)
+<body>
+    <script>
+        const LineBuffer = class {
+            constructor() {
+                this.buf = [];
+                this.cursor = 0;
+            }
+            bind_string(string) {
+                this.cursor = string.length;
+                this.buf = string.split('');
+                console.log(`bind_string: ${this.buf}`);
+                console.log(`bind_string chars: ${this.cursor}`);
+            }
+            put_string() {
+                this.cursor = 0;
+                return this.buf.join("");
+            }
+            to_String() {
+                const s = this.buf.join("");
+                return s;
+            }
+            backspace() {
+                this.cursor -= 1;
+                this.buf.splice(this.cursor, 1);
+                console.log(`bind_string: ${this.buf}`);
+                console.log(`bind_string chars: ${this.cursor}`);
+            }
+            push(key) {
+                console.log(`push:${key}`);
+                this.buf.splice(this.cursor, 0, key);
+                this.cursor += 1;
+                console.log(`bind_string: ${this.buf}`);
+                console.log(`bind_string chars: ${this.cursor}`);
+            }
+            cursor_left() {
+                if (this.cursor >= 0) {
+                    this.cursor -= 1;
+                }
+            }
+            cursor_right() {
+                if (this.cursor < this.buf.length) {
+                    this.cursor += 1;
+                }
+            }
+            get_cursor() {
+                return this.cursor;
+            }
+        }
+        function Initialize() {
+            var el = document.querySelector('.tabs');
+            var instance = M.Tabs.init(el, {});
+            console.log("init");
+        }
+        let line_erase = (term, linebuf) => {
+            for (i = 0; i < linebuf.length; i++) {
+                term.write('\b \b');
+            }
+        }
+        let waitForElm = (selector) => {
+            return new Promise(resolve => {
+                if (document.querySelector(selector)) {
+                    return resolve(document.querySelector(selector));
+                }
 
-<span class="terminal_host">segfo@GitHub</span>: <span class="terminal_path">~/profile</span>$<span class="cursor cursor_small"> </span>
+                const observer = new MutationObserver(mutations => {
+                    if (document.querySelector(selector)) {
+                        observer.disconnect();
+                        resolve(document.querySelector(selector));
+                    }
+                });
 
-</pre>
-        </div>
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+            });
+        }
+        const line_buffer = new LineBuffer();
+        function RunTerminal() {
+            let term_area = document.querySelector('#terminal');
+            var term = new Terminal();
+            let fitAddon = new FitAddon.FitAddon();
+            term.loadAddon(fitAddon);
+            let imgAddon = new ImageAddon.ImageAddon();
+            term.loadAddon(new WebLinksAddon.WebLinksAddon());
+            term.open(term_area);
+            fitAddon.fit();
+            term.writeln('Hello from \x1B[1;3;31mxterm.js\x1B[0m');
+            // WASMがロードされたらプロンプトをwriteする。
+            term_area.addEventListener("wasm_loaded", () => {
+                term.write(`${window.wasm.shell_prompt()}`);
+            })
+            window.addEventListener('resize', function () {
+                fitAddon.fit();
+            });
+            term.onKey(e => {
+                const ev = e.domEvent
+                const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey
+                if (ev.key === "Enter") {
+                    if (line_buffer.buf.length > 0) {
+                        let s = line_buffer.put_string();
+                        term.write(`\r\n${window.wasm.shell_service(s)}`);
+                        console.log(`input: ${s}`);
+                        console.log(window.wasm.shell_service(s))
+                    }
+                    term.write(`\r\n${window.wasm.shell_prompt()}`);
+                    line_buffer.buf = [];
+                } else if (ev.key === "Backspace") {
+                    if (term._core.buffer.x > window.wasm.shell_prompt().length) {
+                        line_buffer.backspace();
+                        term.write('\b \b');
+                    }
+                } else if (ev.key === "Tab") {
+                    e.domEvent.stopPropagation()
+                    e.domEvent.preventDefault()
+                    return false;
+                } else if (ev.key === "ArrowDown") {
+                    line_erase(term, line_buffer.buf);
+                    line_buffer.bind_string(window.wasm.shell_history_command(false));
+                    term.write(line_buffer.to_String());
+                    e.domEvent.stopPropagation()
+                    e.domEvent.preventDefault()
+                    return false;
+                } else if (ev.key === "ArrowUp") {
+                    line_erase(term, line_buffer.buf);
+                    line_buffer.bind_string(window.wasm.shell_history_command(true));
+                    term.write(line_buffer.to_String());
+                    e.domEvent.stopPropagation()
+                    e.domEvent.preventDefault()
+                    return false;
+                } else if (ev.key === "ArrowLeft") {
+                    line_buffer.cursor_left();
+                    e.domEvent.stopPropagation()
+                    e.domEvent.preventDefault()
+                    return false;
+                } else if (ev.key === "ArrowRight") {
+                    line_buffer.cursor_right();
 
-    </div>
-</body>
+                    e.domEvent.stopPropagation()
+                    e.domEvent.preventDefault()
+                    return false;
+                } else if (printable) {
+                    line_buffer.push(e.key);
+                    term.write(e.key);
+                }
+            });
+        }
+    </script>
 
-</html>
+
+<script type="module">import init, * as with_bindings from '/profile-c6ce702f0114ceda.js';init('/profile-c6ce702f0114ceda_bg.wasm').then(()=>{window.wasm=with_bindings;var evt = new CustomEvent("wasm_loaded",{});document.querySelector('#terminal').dispatchEvent(evt);});</script><script>(function () {
+    var protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    var url = protocol + '//' + window.location.host + '/_trunk/ws';
+    var poll_interval = 5000;
+    var reload_upon_connect = () => {
+        window.setTimeout(
+            () => {
+                // when we successfully reconnect, we'll force a
+                // reload (since we presumably lost connection to
+                // trunk due to it being killed, so it will have
+                // rebuilt on restart)
+                var ws = new WebSocket(url);
+                ws.onopen = () => window.location.reload();
+                ws.onclose = reload_upon_connect;
+            },
+            poll_interval);
+    };
+
+    var ws = new WebSocket(url);
+    ws.onmessage = (ev) => {
+        const msg = JSON.parse(ev.data);
+        if (msg.reload) {
+            window.location.reload();
+        }
+    };
+    ws.onclose = reload_upon_connect;
+})()
+</script></body></html>
