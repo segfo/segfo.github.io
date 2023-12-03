@@ -22,8 +22,8 @@
     <script src="./lib/addon-fit.js"></script>
     <script src="./lib/xterm-addon-image.js"></script>
 
-<link rel="preload" href="/profile-4709d90aa534cca6_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
-<link rel="modulepreload" href="/profile-4709d90aa534cca6.js"></head>
+<link rel="preload" href="/profile-6b3f2ecd82e5a923_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
+<link rel="modulepreload" href="/profile-6b3f2ecd82e5a923.js"></head>
 
 <body>
     <script>
@@ -126,9 +126,10 @@
                 if (ev.key === "Enter") {
                     if (line_buffer.buf.length > 0) {
                         let s = line_buffer.put_string();
-                        term.write(`\r\n${window.wasm.shell_service(s)}`);
+                        const result = window.wasm.shell_service(s);
+                        term.write(`\r\n${result}`);
                         console.log(`input: ${s}`);
-                        console.log(window.wasm.shell_service(s))
+                        console.log(result)
                     }
                     term.write(`\r\n${window.wasm.shell_prompt()}`);
                     line_buffer.buf = [];
@@ -175,4 +176,4 @@
     </script>
 
 
-<script type="module">import init, * as with_bindings from '/profile-4709d90aa534cca6.js';init('/profile-4709d90aa534cca6_bg.wasm').then(()=>{window.wasm=with_bindings;var evt = new CustomEvent("wasm_loaded",{});document.querySelector('#terminal').dispatchEvent(evt);});</script></body></html>
+<script type="module">import init, * as with_bindings from '/profile-6b3f2ecd82e5a923.js';init('/profile-6b3f2ecd82e5a923_bg.wasm').then(()=>{window.wasm=with_bindings;var evt = new CustomEvent("wasm_loaded",{});document.querySelector('#terminal').dispatchEvent(evt);});</script></body></html>
