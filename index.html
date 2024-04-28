@@ -22,8 +22,8 @@
     <script src="./lib/addon-fit.js"></script>
     <script src="./lib/xterm-addon-image.js"></script>
 
-<link rel="preload" href="/profile-c9f1f2011e07b98b_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
-<link rel="modulepreload" href="/profile-c9f1f2011e07b98b.js"></head>
+<link rel="preload" href="/profile-e7bdcf05b0ab3ba1_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
+<link rel="modulepreload" href="/profile-e7bdcf05b0ab3ba1.js"></head>
 
 <body>
     <script>
@@ -76,6 +76,12 @@
         function Initialize() {
             var el = document.querySelector('.tabs');
             var instance = M.Tabs.init(el, {});
+            M.updateTextFields();
+            const shared_pubkey = document.getElementById("shared_pubkey");
+            if (shared_pubkey.value !== "") {
+                shared_pubkey.dispatchEvent(new Event("keyup"));
+            }
+            document.getElementById("pubkey").click();
             console.log("init");
         }
         let line_erase = (term, linebuf) => {
@@ -103,6 +109,7 @@
             });
         }
         const line_buffer = new LineBuffer();
+        // const init_message=[""];
         function RunTerminal() {
             let term_area = document.querySelector('#terminal');
             var term = new Terminal();
@@ -112,9 +119,17 @@
             term.loadAddon(new WebLinksAddon.WebLinksAddon());
             term.open(term_area);
             fitAddon.fit();
-            term.writeln('Hello from \x1B[1;3;31mxterm.js\x1B[0m');
+            term.writeln('Introduce console\r\n');
+            term.writeln('Welcome introduce myself page.');
+            term.writeln('You can freely enter any of the implemented commands.');
+            const data = "The list of commands can be displayed using the \x1B[1;3;31mcmd_list\x1B[0m command.\r\n"
+            console.log(data);
+            term.writeln(data);
             // WASMがロードされたらプロンプトをwriteする。
             term_area.addEventListener("wasm_loaded", () => {
+                term.write(`(auto execute)${window.wasm.shell_prompt()}cmd_list`);
+                const result = window.wasm.shell_service("cmd_list");
+                term.write(`\r\n${result}\r\n`);
                 term.write(`${window.wasm.shell_prompt()}`);
             })
             window.addEventListener('resize', function () {
@@ -176,4 +191,4 @@
     </script>
 
 
-<script type="module">import init, * as with_bindings from '/profile-c9f1f2011e07b98b.js';init('/profile-c9f1f2011e07b98b_bg.wasm').then(()=>{window.wasm=with_bindings;var evt = new CustomEvent("wasm_loaded",{});document.querySelector('#terminal').dispatchEvent(evt);});</script></body></html>
+<script type="module">import init, * as with_bindings from '/profile-e7bdcf05b0ab3ba1.js';init('/profile-e7bdcf05b0ab3ba1_bg.wasm').then(()=>{window.wasm=with_bindings;var evt = new CustomEvent("wasm_loaded",{});document.querySelector('#terminal').dispatchEvent(evt);});</script></body></html>

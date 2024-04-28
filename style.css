@@ -6,3 +6,22 @@ body {
     width: 1024px;
     height: 640px;
 }
+
+h2 {
+    font-size: 32px;
+}
+
+div#keyexchg {
+    margin: 0 auto;
+    max-width: 1024px;
+}
+
+.shared_key {
+    font-size: 32px;
+    color: black;
+}
+
+.shared_key_message_label {
+    font-size: 24px;
+    color: black;
+}
