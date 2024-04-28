@@ -2,7 +2,8 @@ body {
     scrollbar-width: none;
     overflow: hidden;
 }
-#terminal{
+#terminal,.xterm-viewport{
+    margin: 0 auto;
     width: 1024px;
     height: 640px;
 }

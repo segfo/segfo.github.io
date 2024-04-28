@@ -22,8 +22,8 @@
     <script src="./lib/addon-fit.js"></script>
     <script src="./lib/xterm-addon-image.js"></script>
 
-<link rel="preload" href="/profile-5d9016af5de551f7_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
-<link rel="modulepreload" href="/profile-5d9016af5de551f7.js"></head>
+<link rel="preload" href="/profile-dac31ce91ce37aa2_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
+<link rel="modulepreload" href="/profile-dac31ce91ce37aa2.js"></head>
 
 <body>
     <script>
@@ -84,6 +84,7 @@
             document.getElementById("pubkey").click();
             console.log("init");
         }
+        // 1行削除
         let line_erase = (term, linebuf) => {
             for (i = 0; i < linebuf.length; i++) {
                 term.write('\b \b');
@@ -192,4 +193,4 @@
     </script>
 
 
-<script type="module">import init, * as with_bindings from '/profile-5d9016af5de551f7.js';init('/profile-5d9016af5de551f7_bg.wasm').then(()=>{window.wasm=with_bindings;var evt = new CustomEvent("wasm_loaded",{});document.querySelector('#terminal').dispatchEvent(evt);});</script></body></html>
+<script type="module">import init, * as with_bindings from '/profile-dac31ce91ce37aa2.js';init('/profile-dac31ce91ce37aa2_bg.wasm').then(()=>{window.wasm=with_bindings;var evt = new CustomEvent("wasm_loaded",{});document.querySelector('#terminal').dispatchEvent(evt);});</script></body></html>
