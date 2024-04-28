@@ -22,8 +22,8 @@
     <script src="./lib/addon-fit.js"></script>
     <script src="./lib/xterm-addon-image.js"></script>
 
-<link rel="preload" href="/profile-dac31ce91ce37aa2_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
-<link rel="modulepreload" href="/profile-dac31ce91ce37aa2.js"></head>
+<link rel="preload" href="/profile-c6481b6b2cdfed31_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
+<link rel="modulepreload" href="/profile-c6481b6b2cdfed31.js"></head>
 
 <body>
     <script>
@@ -113,19 +113,40 @@
         // const init_message=[""];
         function RunTerminal() {
             let term_area = document.querySelector('#terminal');
+            console.log(term_area);
             var term = new Terminal();
             let fitAddon = new FitAddon.FitAddon();
             term.loadAddon(fitAddon);
+            console.log(fitAddon)
             let imgAddon = new ImageAddon.ImageAddon();
             term.loadAddon(new WebLinksAddon.WebLinksAddon());
+            // コンソール以外のタブが開かれた状態で画面がロードされると、うまくサイズが適用されない。
+            // なので、生成時だけコンソールを表示して、fitAddonでfitさせたあと元に戻すといい感じになる。
+            let console_area = document.querySelector('#console');
+            const display_orig=console_area.style.getPropertyValue("display");
+            console.log(console_area.style);
+            console_area.style.setProperty("display","block");
             term.open(term_area);
             fitAddon.fit();
+            console_area.style.setProperty("display",display_orig);
+            
             term.writeln('Introduce console\r\n');
             term.writeln('Welcome introduce myself page.');
             term.writeln('You can freely enter any of the implemented commands.');
             const data = "The list of commands can be displayed using the \x1B[1;3;31mcmd_list\x1B[0m command.\r\n"
-            console.log(data);
             term.writeln(data);
+
+            const xterm_resize_ob = new ResizeObserver(function (entries) {
+                console.log("resized.");
+                // since we are observing only a single element, so we access the first element in entries array
+                try {
+                    fitAddon && fitAddon.fit();
+                    console.log(fitAddon)
+                } catch (err) {
+                    console.log(err);
+                }
+            });
+            xterm_resize_ob.observe(document.querySelector("#terminal"));
             // WASMがロードされたらプロンプトをwriteする。
             term_area.addEventListener("wasm_loaded", () => {
                 term.write(`(auto execute)${window.wasm.shell_prompt()}segfo`);
@@ -134,9 +155,6 @@
                 term.write(`\r\n${window.wasm.shell_service("cmd_list")}\r\n`);
                 term.write(`${window.wasm.shell_prompt()}`);
             })
-            window.addEventListener('resize', function () {
-                fitAddon.fit();
-            });
             term.onKey(e => {
                 const ev = e.domEvent
                 const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey
@@ -193,4 +211,4 @@
     </script>
 
 
-<script type="module">import init, * as with_bindings from '/profile-dac31ce91ce37aa2.js';init('/profile-dac31ce91ce37aa2_bg.wasm').then(()=>{window.wasm=with_bindings;var evt = new CustomEvent("wasm_loaded",{});document.querySelector('#terminal').dispatchEvent(evt);});</script></body></html>
+<script type="module">import init, * as with_bindings from '/profile-c6481b6b2cdfed31.js';init('/profile-c6481b6b2cdfed31_bg.wasm').then(()=>{window.wasm=with_bindings;var evt = new CustomEvent("wasm_loaded",{});document.querySelector('#terminal').dispatchEvent(evt);});</script></body></html>
