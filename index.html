@@ -22,8 +22,8 @@
     <script src="./lib/addon-fit.js"></script>
     <script src="./lib/xterm-addon-image.js"></script>
 
-<link rel="preload" href="/profile-1a028a8726eb0aac_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
-<link rel="modulepreload" href="/profile-1a028a8726eb0aac.js"></head>
+<link rel="preload" href="/profile-95269bb963864d0c_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
+<link rel="modulepreload" href="/profile-95269bb963864d0c.js"></head>
 
 <body>
     <script>
@@ -127,9 +127,10 @@
             term.writeln(data);
             // WASMがロードされたらプロンプトをwriteする。
             term_area.addEventListener("wasm_loaded", () => {
+                term.write(`(auto execute)${window.wasm.shell_prompt()}segfo`);
+                term.write(`\r\n${window.wasm.shell_service("segfo")}\r\n`);
                 term.write(`(auto execute)${window.wasm.shell_prompt()}cmd_list`);
-                const result = window.wasm.shell_service("cmd_list");
-                term.write(`\r\n${result}\r\n`);
+                term.write(`\r\n${window.wasm.shell_service("cmd_list")}\r\n`);
                 term.write(`${window.wasm.shell_prompt()}`);
             })
             window.addEventListener('resize', function () {
@@ -191,4 +192,4 @@
     </script>
 
 
-<script type="module">import init, * as with_bindings from '/profile-1a028a8726eb0aac.js';init('/profile-1a028a8726eb0aac_bg.wasm').then(()=>{window.wasm=with_bindings;var evt = new CustomEvent("wasm_loaded",{});document.querySelector('#terminal').dispatchEvent(evt);});</script></body></html>
+<script type="module">import init, * as with_bindings from '/profile-95269bb963864d0c.js';init('/profile-95269bb963864d0c_bg.wasm').then(()=>{window.wasm=with_bindings;var evt = new CustomEvent("wasm_loaded",{});document.querySelector('#terminal').dispatchEvent(evt);});</script></body></html>
