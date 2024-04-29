@@ -2,11 +2,6 @@ body {
     scrollbar-width: none;
     overflow: hidden;
 }
-/* #terminal,#ltr,.xterm-viewport,.xterm-screen,.terminal ,.xterm ,.xterm-dom-renderer-owner-1{
-    margin: 0 auto;
-    width: 1024px;
-    height: 640px;
-} */
 
 #terminal{
     margin: 0 auto;
